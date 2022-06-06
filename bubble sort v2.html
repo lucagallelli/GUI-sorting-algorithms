@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Bubble Sort - Luca Gallelli
+  </title>
+<script type="text/javascript">
+
+
+var array = new Array();
+function pushArray(){
+array.push((document.getElementById("elem").value));
+    document.getElementById("elem").value = '';
+
+}
+
+function isNumber(evt) {
+    evt = (evt) ? evt : window.event;
+    var charCode = (evt.which) ? evt.which : evt.keyCode;
+    if (charCode > 31 && (charCode < 48 || charCode > 57)) {
+        return false;
+    }
+    return true;
+}
+
+var count = 1
+function sort() {
+
+    document.write("Array you entered was "+ array);
+    var arrayLength = array.length;
+    var i;
+    var j;
+    var k;
+    for(i=0;i<arrayLength;i++)
+    {
+        for(j=i+1;j<arrayLength;j++)
+        {
+          if(array[i]<array[j])
+          {
+                    k=array[i];
+                    array[i]=array[j];
+                    array[j]=k;
+
+          }
+    document.write("<br/><br/>"+ count+"th pass produced : " + array);
+    count = count + 1;
+
+        }
+
+
+    }
+    document.write("<br/><br/>Final sort " + array);
+}
+
+</script>
+</head>
+<body data-gr-c-s-loaded="true">
+
+Enter the is number here: <input type="text" id="elem" onkeypress="return isNumber(event)">
+<br>
+<button onclick="pushArray()">Add to array</button>
+
+<p>Click the button to sort the array.</p>
+
+<button onclick="sort()">Sort</button>
+
+</body></html>

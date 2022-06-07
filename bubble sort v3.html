@@ -13,8 +13,8 @@ array.push((document.getElementById("elem").value));
 
 }
 
-var count = 1
-function sort() {
+var countdec = 1
+function sortdecending() {
 
     document.write("Array you entered was "+ array);
     var arrayLength = array.length;
@@ -32,26 +32,38 @@ function sort() {
                     array[j]=k;
 
           }
-    document.write("<br/><br/>"+ "Pass " + count + ":    " + array);
-    count = count + 1;
+    document.write("<br/><br/>"+ "Pass " + countdec + ":    " + array);
+    countdec = countdec + 1;
 
         }
 
 
     }
-    document.write("<br/><br/>Final sort " + array);
+    document.write("<br/><br/>Final sort"+":    " + array);
 }
+
+document.getElementById("elem")
+    .addEventListener("keyup", function(event) {
+    event.preventDefault();
+    if (event.keyCode === 13) {
+        document.getElementById("buttonadd").click();
+    }
+});
+
 
 </script>
 </head>
 <body>
 
-Enter the is number here: <input type="text" id="elem" onkeypress="return isNumber(event)">
+Enter the number here: <input type="text" id="elem" onkeypress="return isNumber(event)">
 <br>
-<button onclick="pushArray()">Add to array</button>
+<button id="buttonadd" onclick="pushArray()">Add to array</button>
+
 
 <p>Click the button to sort the array.</p>
 
-<button onclick="sort()">Sort</button>
+<button id="button1" onclick="sortdecending()">Sort Decending</button>
+<button id="button2" onclick="sortascending()">Sort Ascending </button>
 
 </body></html>
+

@@ -71,10 +71,10 @@ function sortascending() {
     document.write("<br/><br/>Final sort"+":    " + array);
 }
 
-const textbox = document.getElementById("elem");
-    textbox.addEventListener("keypress", function onEvent(event) {
+const input = document.getElementById("enter");
+    input.addEventListener("keypress", function onEvent(event) {
     if (event.key === "enter") {
-        document.getElementById(add).click();
+        document.getElementById("buttonadd").click();
     }
 });
 
@@ -82,10 +82,10 @@ const textbox = document.getElementById("elem");
 </script>
 </head>
 <body>
-
-Enter the number here: <input id="elem" type="text" onkeypress="return isNumber(event)">
+    
+Enter the number here: <input input.setAttribute(id = "enter")  type="text" onkeypress="return isNumber(event)">
 <br>
-<button id="add" onclick="pushArray()">Add to array</button>
+<button id="buttonadd" onclick="pushArray()">Add to array</button>
 
 
 <p>Click the button to sort the array.</p>
@@ -95,3 +95,7 @@ Enter the number here: <input id="elem" type="text" onkeypress="return isNumber(
 
 </body></html>
 
+<!-- Things to add: Working enter button for textbox
+                    Ability for multiple digits to be entered
+                    Visualisation of array being sorted
+-->

@@ -71,21 +71,23 @@ function sortascending() {
     document.write("<br/><br/>Final sort"+":    " + array);
 }
 
-const input = document.getElementById("enter");
-    input.addEventListener("keypress", function onEvent(event) {
-    if (event.key === "enter") {
-        document.getElementById("buttonadd").click();
-    }
-});
+document.addEventListener(function(){
+        document.getElementById("enter").addEventListener("keypress", function(event){
+            if(event.keyCode == 13){
+                document.getElementById("add").click();
+            }
+        });
+    });
 
 
 </script>
 </head>
 <body>
     
-Enter the number here: <input input.setAttribute(id = "enter")  type="text" onkeypress="return isNumber(event)">
+Enter the number here: <input type="text" id="elem" onkeypress="return isNumber(event)">
 <br>
-<button id="buttonadd" onclick="pushArray()">Add to array</button>
+<button id="add" onclick="pushArray()" >Add to array</button>
+
 
 
 <p>Click the button to sort the array.</p>

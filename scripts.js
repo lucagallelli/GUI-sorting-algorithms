@@ -2,12 +2,10 @@ const tolerance = 2; //px
 const maxHeight = 200;
 const minHeight = 50; // The size of all boxes will be between these
 
-var movesDone = 0; // Tracks the number of callbacks from moveTo
-
 var boxArray = [];
-var pos = [];
 // positions of each index of the array
-var array = new Array();
+var pos = [];
+var array = [];
 
 function makeBoxes(array)
 // Generate a GUI corresponding with the supplied array
@@ -15,11 +13,12 @@ function makeBoxes(array)
     var holder = document.getElementById("container");
 
     // purge previous gui elements
-    boxes = holder.getElementsByClassName("box");
-    while (boxes.length > 0)
+    while (holder.children.length > 0)
     {
-        holder.removeChild(boxes[0])
+        holder.removeChild(holder.children[0])
     }
+    boxArray = [];
+    pos = [];
 
     // Find the largest and smallest elements of array by linear search
     min = array[0];
@@ -50,8 +49,6 @@ function makeBoxes(array)
         new_box.style["width"] = "10px";
         new_box.style["height"] = boxHeight + "px";
 
-        // This is how we set colour, is there a more interesting option than a static
-        // colour? How about a graident or random colour?
         new_box.style["background-color"] = "red";
 
         // Set the starting position of the box
@@ -74,6 +71,8 @@ function rescale(min, max, value)
 }
 
 function pushArray(){
+    // Empty the array
+    array = [];
     text = document.getElementById("elem").value;
     // Split the text into substrings based on commas
     substrings = text.split(",");
@@ -89,66 +88,207 @@ function pushArray(){
     document.getElementById("elem").value = '';
 }
 
-var countdec = 1
-function bubbleSort(isAscending) {
-    text = document.getElementById("output");
-    text.innerHTML = "Array you entered was "+ array + "\n";
-    makeBoxes(array);
-    var maxI = array.length;
-    var i;
-    var j;
-    var temp;
-    var changed = true;
-    var lastMovesDone = -1;
-    while (changed)
-    {
-        changed = false;
-        for(i = 0; i < maxI - 1; i++)
-        {
-            j = i + 1;
-            var hasSwaped = false;
-            if (isAscending)
-            {
-                hasSwaped = array[i] > array[j];
-            }   
-            else
-            {
-                hasSwaped = array[i] < array[j];
-            }
-            if(hasSwaped)
-            {
-                changed = true;
-                // Only run the sort on the rising edge of movesDone counter
-                if (movesDone == lastMovesDone)
-                {
-                    continue;
-                }
-                else
-                {
-                    lastMovesDone = movesDone;
-                }
-                temp = array[i];
-                array[i] = array[j];
-                array[j] = temp;
-                swap(i, j);
-            }
-        }
-        text.innerHTML += "\n\nPass " + countdec + ":    " + array + "\n";
-        countdec = countdec + 1;
-        maxI--;
-    }
-    text.innerHTML += "\n\nFinal sort"+":    " + array + "\n";
+function addLine(text)
+// Display a line of text in the output div
+{
+    holder = document.getElementById("output");
+    var para = document.createElement("p");
+    holder.appendChild(para);
+    para.innerHTML = text;
 }
 
+function clearOutput()
+// Delete all of the text we have currently output
+{
+    holder = document.getElementById("output");
+    while(holder.children.length > 0)
+    {
+        holder.removeChild(holder.children[0]);
+    }
+}
+
+// Bubble sort
+function startBubbleSort(isAscending)
+{
+    clearOutput();
+    makeBoxes(array);
+    recursiveBubbleSort(isAscending, 0, 0, false);
+}
+
+function recursiveBubbleSort(isAscending, pass, i, changed)
+// Since we need to react to callbacks, the recursive version of the search is prefered
+// This is the recursive form of the bubble sort covered in SDD
+{
+    j = i + 1;
+    var hasSwaped = false
+    if (isAscending)
+    {
+        hasSwaped = array[i] > array[j];
+    }   
+    else
+    {
+        hasSwaped = array[i] < array[j];
+    }
+    // We define the function we call in the next step
+    function next()
+    {
+        var nextI = i + 1;
+        var nextChanged = changed;
+        // If a pass is finished
+        if (i >= (array.length - pass))
+        {
+            pass++;
+            addLine("Pass " + pass + ":    " + array);
+            // If there were no changes for a whole pass, stop sorting
+            if (!changed)
+            {
+                return;
+            }
+            nextI = 0;
+            nextChanged = false;
+        }
+        recursiveBubbleSort(isAscending, pass, nextI, nextChanged);
+    }
+    // If a swap is needed, we give the next function to the swap method as a callback
+    // once the visual swap is done, it will be called
+    if(hasSwaped)
+    {
+        temp = array[i];
+        array[i] = array[j];
+        array[j] = temp;
+        changed = true;
+        swap(i, j, next);
+    }
+    // If no swap is needed we swap right away
+    else
+    {
+        next();
+    }
+}
+
+// Selection sort
+function startSelectionSort(isAscending)
+{
+    clearOutput();
+    makeBoxes(array);
+    recursiveSelectionSort(isAscending, 0);
+}
+
+function recursiveSelectionSort(isAscending, pass)
+// Since we need to react to callbacks, the recursive version of the search is prefered
+// This is the recursive form of the selection sort covered in SDD
+{
+    var i = pass;
+    var candidate = array[i];
+    var candidateIndex = i;
+    // Find the largest/smallest item and index via a linear search
+    while (i < array.length)
+    {
+        var item = array[i];
+        var newCandidate;
+        if (isAscending)
+        {
+            newCandidate = item < candidate;
+        }
+        else
+        {
+            newCandidate = item > candidate;
+        }
+        if (newCandidate)
+        {
+            candidate = item;
+            candidateIndex = i;
+        }
+        i++;
+    }
+    // We define the function we call in the next step
+    function next()
+    {
+        pass++;
+        if (pass < array.length)
+        {
+            recursiveSelectionSort(isAscending, pass);
+        } 
+    }
+    // If a swap is needed, we give the next function to the swap method as a callback
+    // once the visual swap is done, it will be called
+    if(candidateIndex != pass)
+    {
+        temp = array[pass];
+        array[pass] = array[candidateIndex];
+        array[candidateIndex] = temp;
+        swap(pass, candidateIndex, next);
+    }
+    // If no swap is needed we start the next pass
+    else
+    {
+        next();
+    }
+}
+
+function startInsertionSort(isAscending)
+{
+    clearOutput();
+    makeBoxes(array);
+    //First value on left is already sorted, therefor we start on the second value
+    recursiveInsertionSort(isAscending, 1, 1);
+
+}
+
+function recursiveInsertionSort(isAscending, pass, location)
+{
+    var j = location - 1;
+    var hasSwaped = false
+    if (j >= 0)
+    {
+        if (isAscending)
+        {
+            hasSwaped = array[location] < array[j];
+        }   
+        else
+        {
+            hasSwaped = array[location] > array[j];
+        }
+    }
+    // We define the function we call in the next step
+    function next()
+    {
+        location--;
+        if (!hasSwaped)
+        {
+            pass++;
+            location = pass;
+        }
+        if (pass < array.length)
+        {
+            recursiveInsertionSort(isAscending, pass, location);
+        }
+    }
+
+    if(hasSwaped)
+    {
+        temp = array[location];
+        array[location] = array[j];
+        array[j] = temp;
+        swap(location, j, next);
+    }
+    // If no swap is needed we start the next pass
+    else
+    {
+        next();
+    }
+}
+    
+
 // Sorting animation module
-function swap(i1, i2)
+function swap(i1, i2, callback)
 // Swap two elements both visually and in the array
 {
-    moveTo(boxArray[i1], pos[i2], 300);
-    moveTo(boxArray[i2], pos[i1], 300, function(){console.log("Swap done.")});
-    temp = boxArray[i1];
-    boxArray[i1] = boxArray[i2];
-    boxArray[i2] = temp;
+        moveTo(boxArray[i1], pos[i2], 300);
+        moveTo(boxArray[i2], pos[i1], 300, callback);
+        temp = boxArray[i1];
+        boxArray[i1] = boxArray[i2];
+        boxArray[i2] = temp;
 }
 
 function moveTo(element, destination, timesteps, callback=null)
@@ -178,7 +318,6 @@ function moveTo(element, destination, timesteps, callback=null)
             clearInterval(movingFrames);
             if (callback)
             {
-                movesDone++;
                 callback();
             }
             return;
@@ -201,6 +340,7 @@ function moveStep(element, direction, distance)
     element.style["left"] = (Number(currentX) + dx) + "px";
 }
 
+// Vector helper functions
 function norm(v)
 // Get the length of a vector
 {
@@ -221,24 +361,4 @@ function normalise(u)
         v[index] = v[index] / mag;
     }
     return v
-}
-
-function sumNumbers()
-{
-    text = document.getElementById("inputTest").value;
-    // Split the text into substrings based on commas
-    substrings = text.split(",");
-    total = 0;
-    substrings.forEach(element => {
-        // Convert the substring into a number
-        num = Number(element);
-        // if the conversion failed, ignore that entry
-        if (!isNaN(num))
-        {
-            total += num
-        }
-    });
-    output = document.getElementById("outputTest");
-    output.value = total;
-    console.log(total);
 }

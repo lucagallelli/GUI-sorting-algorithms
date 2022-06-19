@@ -12,11 +12,16 @@ Enter the number here: <input type="text" id="elem" onkeypress="if(event.keyCode
 <p>Click the button to sort the array.</p>
 <div id="container"></div>
 <script src="scripts.js"></script> <!-- Links to the JS file allowing for scripts to perform functions -->
-<button id="button2" onclick="bubbleSort(true)">Sort Ascending </button>
+<button onclick="startBubbleSort(true)">Bubble Sort Ascending </button>
+<button onclick="startBubbleSort(false)">Bubble Sort Descending</button>
+<br>
+<button onclick="startSelectionSort(true)">Selection Sort Ascending </button>
+<button onclick="startSelectionSort(false)">Selection Sort Descending</button>
+<br>
+<button onclick="startInsertionSort(true)">Insertion Sort Ascending</button>
+<button onclick="startInsertionSort(false)">Insertion Sort Descending</button>
 
-<button id="button1" onclick="bubbleSort(false)">Sort Descending</button>
-
-<p id="output"></p>
+<div id="output"></div>
 
 </body></html>
 

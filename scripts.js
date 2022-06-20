@@ -205,6 +205,7 @@ function recursiveSelectionSort(isAscending, pass)
     function next()
     {
         pass++;
+        addLine("Pass " + pass + ":    " + array);
         if (pass < array.length)
         {
             recursiveSelectionSort(isAscending, pass);
@@ -257,6 +258,7 @@ function recursiveInsertionSort(isAscending, pass, location)
         if (!hasSwaped)
         {
             pass++;
+            addLine("Pass " + pass + ":    " + array);
             location = pass;
         }
         if (pass < array.length)

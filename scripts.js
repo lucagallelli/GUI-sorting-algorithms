@@ -318,7 +318,7 @@ function moveTo(element, destination, timesteps, callback=null)
             element.style["top"] = (destination[1]) + "px";
             element.style["left"] = (destination[0]) + "px";
             clearInterval(movingFrames);
-            if (callback)
+            if (callback) 
             {
                 callback();
             }
